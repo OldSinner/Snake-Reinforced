@@ -1,4 +1,4 @@
-class Point:
-    def __init__(self, x, y) -> None:
-        self.x = x
-        self.y = y
+from collections import namedtuple
+from Const import BLOCK_SIZE
+
+Point = namedtuple('Point', 'x, y')

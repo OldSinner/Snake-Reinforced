@@ -1,15 +1,15 @@
 from enum import Enum
+BLOCK_SIZE = 20
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 480
+SPEED = 10
 
 
 class Colors(Enum):
     WHITE = (255, 255, 255)
     RED = (200, 0, 0)
-    BLUE = (0, 0, 22)
+    BLUE = (0, 0, 255)
     BLACK = (0, 0, 0)
-
-
-class GameConst(Enum):
-    BLOCK_SIZE = 20
 
 
 class Direction(Enum):
