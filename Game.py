@@ -1,7 +1,7 @@
 import pygame
+import random
 from Const import *
 from Math import Point
-
 
 class Snake:
     def __init__(self):
@@ -13,26 +13,55 @@ class Snake:
         self.max_y = self.h / BLOCK_SIZE
         pygame.display.set_caption("Snake")
 
-        # Game Time
+        # Game logic
         self.clock = pygame.time.Clock()
+        self.start_newgame()
+       
 
-        # Snake
+    def start_newgame(self):
+        self.score = 0
+        self.gameover = False
         self.snake_head = Point(self.max_x / 2, self.max_y / 2)
         self.snake = [self.snake_head, Point(
             self.snake_head.x - 1, self.snake_head.y), Point(self.snake_head.x - 2, self.snake_head.y)]
         self.direction = Direction.RIGHT
+        self.create_food()
 
     def make_step(self):
         self.handle_input()
         self.move()
         self.draw()
+        self.check_game_status()
         self.clock.tick(SPEED)
+
+        if self.gameover:
+            self.start_newgame()
+
+    def check_game_status(self):
+        if self.is_collide():
+            self.gameover = True
+    
+    def create_food(self):
+        x = random.randint(0, self.max_x - 1)
+        y = random.randint(0, self.max_y - 1)
+        self.food = Point(x, y)
+        while self.food in self.snake:
+            self.create_food()
+        self.food = Point(x, y)
 
     def draw(self):
         self.display.fill(Colors.BLACK.value)
         for point in self.snake:
-            draw_rect_on_screen(self.display, Colors.RED.value, point)
+            draw_rect_on_screen(self.display, Colors.BLUE.value, point)
+        draw_rect_on_screen(self.display, Colors.RED.value, self.food)
         pygame.display.flip()
+
+    def is_collide(self):
+        if self.snake_head.x < 0 or self.snake_head.x > self.max_x - 1 or self.snake_head.y < 0 or self.snake_head.y > self.max_y - 1:
+            return True
+        if self.snake_head in self.snake[1:]:
+            return True
+        return False
 
     def move(self):
         x = self.snake_head.x
@@ -46,16 +75,19 @@ class Snake:
         elif self.direction == Direction.DOWN:
             y += 1
 
-        if self.is_get_food() == False:
-            self.snake.pop()
-
         self.snake_head = Point(x, y)
         self.snake.insert(0, self.snake_head)
-        print(self.snake_head)
+
+        if self.is_get_food() == False:
+            self.score += 1
+            self.snake.pop()
 
     def is_get_food(self):
+        if self.snake_head == self.food:
+            self.create_food()
+            return True
         return False
-
+    
     def handle_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
