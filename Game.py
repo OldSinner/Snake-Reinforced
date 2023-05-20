@@ -16,7 +16,7 @@ class Snake:
         # Game logic
         self.clock = pygame.time.Clock()
         self.start_newgame()
-       
+        self.score_counter = pygame.font.SysFont('Arial', 20)
 
     def start_newgame(self):
         self.score = 0
@@ -51,6 +51,8 @@ class Snake:
 
     def draw(self):
         self.display.fill(Colors.BLACK.value)
+        text_surface = self.score_counter.render("Score: "+str(self.score), True, Colors.WHITE.value)
+        self.display.blit(text_surface, (0,0))
         for point in self.snake:
             draw_rect_on_screen(self.display, Colors.BLUE.value, point)
         draw_rect_on_screen(self.display, Colors.RED.value, self.food)
@@ -79,11 +81,11 @@ class Snake:
         self.snake.insert(0, self.snake_head)
 
         if self.is_get_food() == False:
-            self.score += 1
             self.snake.pop()
 
     def is_get_food(self):
         if self.snake_head == self.food:
+            self.score += 1
             self.create_food()
             return True
         return False

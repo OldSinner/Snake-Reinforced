@@ -1,6 +1,7 @@
 import pygame
 from Game import Snake
 pygame.init()
+pygame.font.init()
 
 game = Snake()
 
