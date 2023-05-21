@@ -6,7 +6,7 @@ pygame.font.init()
 game = Snake()
 
 while True:
-    game.make_step()
+    print(game.make_step([0,1,0]))
 
 
 pygame.quit()

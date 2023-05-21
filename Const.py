@@ -4,7 +4,6 @@ SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 SPEED = 10
 
-
 class Colors(Enum):
     WHITE = (255, 255, 255)
     RED = (200, 0, 0)

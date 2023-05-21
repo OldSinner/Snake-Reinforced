@@ -12,6 +12,7 @@ class Snake:
         self.max_x = self.w / BLOCK_SIZE
         self.max_y = self.h / BLOCK_SIZE
         pygame.display.set_caption("Snake")
+        self.step_counter = 0;
 
         # Game logic
         self.clock = pygame.time.Clock()
@@ -27,19 +28,29 @@ class Snake:
         self.direction = Direction.RIGHT
         self.create_food()
 
-    def make_step(self):
-        self.handle_input()
-        self.move()
+    def make_step(self, action):
+        #Action Data From Game
+        self.reward = 0
+        self.step_counter += 1
+
+        
+        self.handle_input(action)
+        if self.gameover == False:
+             self.move()
         self.draw()
         self.check_game_status()
         self.clock.tick(SPEED)
 
-        if self.gameover:
-            self.start_newgame()
+        # if self.gameover:
+        #     self.start_newgame()
+
+        return self.gameover, self.score, self.reward
 
     def check_game_status(self):
-        if self.is_collide():
+        if self.is_collide(self.snake_head) or self.step_counter > 100 * len(self.snake):
             self.gameover = True
+            self.reward = -10
+        
     
     def create_food(self):
         x = random.randint(0, self.max_x - 1)
@@ -58,10 +69,10 @@ class Snake:
         draw_rect_on_screen(self.display, Colors.RED.value, self.food)
         pygame.display.flip()
 
-    def is_collide(self):
-        if self.snake_head.x < 0 or self.snake_head.x > self.max_x - 1 or self.snake_head.y < 0 or self.snake_head.y > self.max_y - 1:
+    def is_collide(self, pt):
+        if pt.x < 0 or pt.x > self.max_x - 1 or pt.y < 0 or pt.y > self.max_y - 1:
             return True
-        if self.snake_head in self.snake[1:]:
+        if pt in self.snake[1:]:
             return True
         return False
 
@@ -79,31 +90,31 @@ class Snake:
 
         self.snake_head = Point(x, y)
         self.snake.insert(0, self.snake_head)
-
         if self.is_get_food() == False:
             self.snake.pop()
 
     def is_get_food(self):
         if self.snake_head == self.food:
             self.score += 1
+            self.reward = 10
             self.create_food()
             return True
         return False
     
-    def handle_input(self):
+    def handle_input(self, action):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT]:
-                self.direction = Direction.LEFT
-            elif keys[pygame.K_RIGHT]:
-                self.direction = Direction.RIGHT
-            elif keys[pygame.K_UP]:
-                self.direction = Direction.UP
-            elif keys[pygame.K_DOWN]:
-                self.direction = Direction.DOWN
+        
+        directions = [Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT]
+        idx = directions.index(self.direction)
+        if action[1] == 1:
+            idx = (idx + 1) % 4
+        elif action[2] == 1:
+            idx = (idx - 1) % 4
+        self.direction = directions[idx]
+
 
 
 def draw_rect_on_screen(display, color, point):
