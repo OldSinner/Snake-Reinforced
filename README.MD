@@ -27,7 +27,7 @@ To get started with Snake AI, follow these steps:
 1. Clone the repository from GitHub:
 
    ```shell
-   git clone 
+   git clone https://github.com/OldSinner/Snake-Reinforced.git
    ```
 2. Install the necessary dependencies. Make sure you have Python and Pygame installed on your system. You can install PyTorch by running:
 
