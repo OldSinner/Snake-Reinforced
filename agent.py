@@ -5,6 +5,8 @@ from Game import Snake
 from Const import *
 from collections import deque
 from model import Linear_QNet, QTrainer
+from Plot import plot
+
 
 class Agent:
     def __init__(self):
@@ -13,7 +15,7 @@ class Agent:
         self.gamma = 0.9
         self.discount_rate = 0
         self.memory = deque(maxlen=MAX_MEMORY)
-        self.model = Linear_QNet(11,256,3)
+        self.model = Linear_QNet(11, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def get_state(self, game):
@@ -65,7 +67,19 @@ class Agent:
                 data.record = score
                 self.model.save()
             # self.train_long_memory()
-        print(f'Game: {self.n_games} Score: {score} Record: {data.record}')
+            print(f'Game: {self.n_games} Score: {score} Record: {data.record}')
+            data.plot_scores.append(score)
+            data.total_score += score
+            data.plot_values.append(data.total_score / self.n_games)
+            plot(data.plot_scores, data.plot_values)
+
+
+class AgentDataHolder:
+    def __init__(self):
+        self.plot_scores = []
+        self.plot_values = []
+        self.total_score = 0
+        self.record = 0
 
 
 def train():
@@ -78,11 +92,3 @@ def train():
 
 if __name__ == '__main__':
     train()
-
-
-class AgentDataHolder:
-    def __init__(self):
-        self.plot_scores = []
-        self.plot_values = []
-        self.total_score = 0
-        self.record = 0

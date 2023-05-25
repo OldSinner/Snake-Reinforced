@@ -17,7 +17,7 @@ class Snake:
         self.max_x = self.w / BLOCK_SIZE
         self.max_y = self.h / BLOCK_SIZE
         pygame.display.set_caption("Snake")
-        self.step_counter = 0;
+        self.step_counter = 0
 
         # Game logic
         self.clock = pygame.time.Clock()
@@ -49,6 +49,7 @@ class Snake:
 
     def check_game_status(self):
         if self.is_collide(self.snake_head) or self.step_counter > 100 * len(self.snake):
+            self.step_counter = 0
             self.gameover = True
             self.reward = -10
 
@@ -95,6 +96,7 @@ class Snake:
 
     def is_get_food(self):
         if self.snake_head == self.food:
+            self.step_counter = 0
             self.score += 1
             self.reward = 10
             self.create_food()
